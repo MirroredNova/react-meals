@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
-import Checkout from './Checkout';
 
 const CartActionsWrapper = styled.div`
   text-align: right;
@@ -34,18 +33,15 @@ const CartActionsWrapper = styled.div`
 
 type Props = {
   toggleCart: () => void
+  toggleCheckoutVisible: () => void
 }
 
-function CartActions({ toggleCart }: Props) {
-  const [checkoutVisible, setCheckedoutVisible] = useState(false);
-
+function CartActions({ toggleCart, toggleCheckoutVisible }: Props) {
   return (
-    checkoutVisible ? <Checkout onCancel={toggleCart} /> : (
-      <CartActionsWrapper>
-        <button className="button--alt" type="button" onClick={toggleCart}>Close</button>
-        <button className="button" type="button" onClick={() => setCheckedoutVisible(true)}>Order</button>
-      </CartActionsWrapper>
-    )
+    <CartActionsWrapper>
+      <button className="button--alt" type="button" onClick={toggleCart}>Close</button>
+      <button className="button" type="button" onClick={toggleCheckoutVisible}>Order</button>
+    </CartActionsWrapper>
   );
 }
 

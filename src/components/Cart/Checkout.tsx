@@ -1,9 +1,11 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
+import { UserData } from '../../constants/types';
 import Input from '../UI/Input';
 
 type Props = {
   onCancel: () => void;
+  onConfirm: (userData: UserData) => void
 }
 
 const ButtonWrapper = styled.div`
@@ -37,7 +39,16 @@ const ButtonWrapper = styled.div`
   }
 `;
 
-function Checkout({ onCancel }: Props) {
+const isEmpty = (value: string) => value.trim() === '';
+const isNotFiveChars = (value: string) => value.trim().length !== 5;
+
+function Checkout({ onCancel, onConfirm }: Props) {
+  const [formInputsValidity, setFormInputsValidity] = useState({
+    name: true,
+    street: true,
+    city: true,
+    postal: true,
+  });
   const nameInputRef = useRef<HTMLInputElement>(null);
   const streetInputRef = useRef<HTMLInputElement>(null);
   const postalInputRef = useRef<HTMLInputElement>(null);
@@ -46,10 +57,38 @@ function Checkout({ onCancel }: Props) {
   const confirmHandler = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const enteredName = nameInputRef.current?.value;
-    const enteredStreet = streetInputRef.current?.value;
-    const enteredPostal = postalInputRef.current?.value;
-    const enteredCity = cityInputRef.current?.value;
+    const enteredName = nameInputRef.current?.value || '';
+    const enteredStreet = streetInputRef.current?.value || '';
+    const enteredPostal = postalInputRef.current?.value || '';
+    const enteredCity = cityInputRef.current?.value || '';
+
+    const enteredNameIsValid = !isEmpty(enteredName);
+    const enteredStreetIsValid = !isEmpty(enteredStreet);
+    const enteredCityIsValid = !isEmpty(enteredCity);
+    const enteredPostalIsValid = !isNotFiveChars(enteredPostal);
+
+    setFormInputsValidity({
+      name: enteredNameIsValid,
+      street: enteredStreetIsValid,
+      city: enteredCityIsValid,
+      postal: enteredPostalIsValid,
+    });
+
+    const formIsValid = enteredNameIsValid
+      && enteredStreetIsValid
+      && enteredCityIsValid
+      && enteredPostalIsValid;
+
+    if (!formIsValid) {
+      return;
+    }
+
+    onConfirm({
+      name: enteredName,
+      street: enteredStreet,
+      city: enteredCity,
+      postal: enteredPostal,
+    });
   };
 
   return (
@@ -65,6 +104,7 @@ function Checkout({ onCancel }: Props) {
         >
           Your Name
         </Input>
+        {!formInputsValidity.name && <p>Please enter a valid name</p>}
       </div>
       <div>
         <Input
@@ -77,6 +117,7 @@ function Checkout({ onCancel }: Props) {
         >
           Street
         </Input>
+        {!formInputsValidity.street && <p>Please enter a valid street</p>}
       </div>
       <div>
         <Input
@@ -89,6 +130,7 @@ function Checkout({ onCancel }: Props) {
         >
           Postal Code
         </Input>
+        {!formInputsValidity.postal && <p>Please enter a valid postal</p>}
       </div>
       <div>
         <Input
@@ -101,6 +143,7 @@ function Checkout({ onCancel }: Props) {
         >
           City
         </Input>
+        {!formInputsValidity.city && <p>Please enter a valid city</p>}
       </div>
       <ButtonWrapper>
         <button type="button" className="button--alt" onClick={onCancel}>

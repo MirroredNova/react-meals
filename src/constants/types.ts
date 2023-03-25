@@ -15,11 +15,19 @@ type DefaultCart = {
   totalAmount: number;
 };
 
+type UserData = {
+  name: string;
+  street: string;
+  city: string;
+  postal: string;
+};
+
 interface Cart extends DefaultCart {
   addItem: (item: CartItem) => void;
   removeItem: (id: string) => void;
+  clearCart: () => void;
 }
 
 export type {
-  Meal, CartItem, DefaultCart, Cart,
+  Meal, CartItem, DefaultCart, Cart, UserData,
 };

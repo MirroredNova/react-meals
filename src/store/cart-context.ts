@@ -6,6 +6,7 @@ const cart: Cart = {
   totalAmount: 0,
   addItem(item: CartItem): void {},
   removeItem(id: string): void {},
+  clearCart(): void {},
 };
 
 export default cart;
